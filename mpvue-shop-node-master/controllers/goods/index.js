@@ -38,6 +38,32 @@ async function detailAction(ctx) {
     goods_id : goodsId
   }).select();
 
+   //获取商品specification列表填充值
+   const specArray = await mysql('nideshop_goods_specification').column("value").where({
+    goods_id : goodsId
+  }).select();
+
+  let skuArrOne = [];
+  let skuArrTwo = [];
+  if(multiArray.length > 0 ){
+    for(let i=0;i<multiArray.length;i++){
+      skuArrOne.push(multiArray[i].value);
+    }
+  }
+  if(specArray.length > 0 ){
+    for(let i=0;i<specArray.length;i++){
+      skuArrTwo.push(specArray[i].value);
+    }
+  }
+  let skuPickerArr = [];
+  if(skuArrOne.length >0){
+    skuPickerArr.push(skuArrOne);
+  }
+  if(skuArrTwo.length >0){
+    skuPickerArr.push(skuArrTwo);
+  }
+  
+
   //评论条数
   const commentCount = await mysql('nideshop_comment').where({
     value_id: goodsId,
@@ -105,7 +131,8 @@ async function detailAction(ctx) {
     "productList": productList,
     "collected": collected,
     "allnumber": allnumber,
-    "multiArray":multiArray
+    "multiArray":multiArray,
+    "skuPickerArr":skuPickerArr
   }
 }
 
