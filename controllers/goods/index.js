@@ -209,7 +209,28 @@ async function goodsList(ctx) {
 
 }
 
+
+async function skuinfoaction(ctx) {
+
+  //ctx.query 获取get请求的参数对象的形式
+  const goodsId = ctx.query.goodsId;
+  const skuValue = ctx.query.skuValue;
+  //商品信息
+  const skuInfo = await mysql('nideshop_goods_sku').where({
+    'goods_id': goodsId,
+    'value' : skuValue
+  }).select();
+
+
+  ctx.body = {
+    "skuInfo": skuInfo
+  }
+
+}
+
+
 module.exports = {
   detailAction,
-  goodsList
+  goodsList,
+  skuinfoaction
 }

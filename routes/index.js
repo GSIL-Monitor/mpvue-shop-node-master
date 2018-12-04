@@ -69,6 +69,8 @@ router.get('/category/categoryNav', controllers.category.index.categoryNav)
 router.get('/goods/detailaction', controllers.goods.index.detailAction)
 //2.获取商品列表
 router.get('/goods/goodsList', controllers.goods.index.goodsList)
+//3.商品sku接口
+router.get('/goods/skuinfoaction', controllers.goods.index.skuinfoaction)
 
 
 /**

@@ -14,6 +14,12 @@ const CONF = {
 
   //本开发环境搭建-----------------------------------------------------------------------
 
+  // qcloudAppId: '1258107522',
+  // qcloudSecretId: 'AKID2rSpytY6MN9gxytFUUGn58wVpukJ4eQw',
+  // qcloudSecretKey: 'OWO0LQFo8D1cz70e3FEyTjlZ8SXOzVnq',
+
+
+
 
 
 

@@ -5,15 +5,20 @@ async function addCart(ctx) {
   const {
     number,
     goodsId,
-    openId
+    openId,
+    skuId,
+    showPrice,
+    productMsg
   } = ctx.request.body
 
 
   //判断购物车是否包含此数据
   const haveGoods = await mysql("nideshop_cart").where({
     "user_id": openId,
-    "goods_id": goodsId
-  }).select()
+    "goods_id": goodsId,
+    "goods_name": productMsg
+
+  }).select();
 
 
   if (haveGoods.length == 0) {
@@ -28,8 +33,8 @@ async function addCart(ctx) {
       "id": goodsId
     }).select();
     const {
-      retail_price,
-      name,
+      // retail_price,
+      // name,
       list_pic_url
     } = goods[0];
     //如果不存在
@@ -37,21 +42,24 @@ async function addCart(ctx) {
       "user_id": openId,
       "goods_id": goodsId,
       number,
-      "goods_name": name,
+      "goods_name": productMsg,
       list_pic_url,
-      retail_price
+      "retail_price":showPrice,
+      "sku_id":skuId
     })
   } else {
     //如果存在
     const oldNumber = await mysql("nideshop_cart").where({
       "user_id": openId,
-      "goods_id": goodsId
+      "goods_id": goodsId,
+      "goods_name":productMsg
     }).column('number').select();
-    console.log(oldNumber)
+    // console.log(oldNumber)
     //跟新数据
     await mysql("nideshop_cart").where({
       "user_id": openId,
-      "goods_id": goodsId
+      "goods_id": goodsId,
+      "goods_name":productMsg
     }).update({
       "number": oldNumber[0].number + number
     });
