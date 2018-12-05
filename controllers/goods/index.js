@@ -111,6 +111,7 @@ async function detailAction(ctx) {
   //判断该用户是否在购物车有此商品
   const oldNumber = await mysql("nideshop_cart").where({
     "user_id": openId,
+    "status": 0
   }).column('number').select();
   let allnumber = 0;
 

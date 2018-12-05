@@ -6,11 +6,12 @@ async function submitAction(ctx) {
     const {
         openId,
     } = ctx.request.body;
-    let goodsId = ctx.request.body.goodsId;
+    let cartId = ctx.request.body.cartId;
     let allPrise = ctx.request.body.allPrise
     //是否存在在订单
     const isOrder = await mysql('nideshop_order').where({
         user_id: openId,
+        goods_id: cartId
     }).select();
     // 存在
     // var nowgoodsid = "";
@@ -20,11 +21,11 @@ async function submitAction(ctx) {
         // allPrise = isOrder[0].allprise + allPrise
         const data = await mysql('nideshop_order').where({
             user_id: openId,
+            goods_id: cartId
         }).update({
-            user_id: openId,
-            goods_id: goodsId,
-            allprice: allPrise
-        })
+            allprice: allPrise,
+            status: 0
+        });
         if (data) {
             ctx.body = {
                 data: true
@@ -37,9 +38,10 @@ async function submitAction(ctx) {
     } else {
         const data = await mysql('nideshop_order').insert({
             user_id: openId,
-            goods_id: goodsId,
-            allprice: allPrise
-        })
+            goods_id: cartId,
+            allprice: allPrise,
+            status: 0
+        });
         if (data) {
             ctx.body = {
                 data: true
@@ -55,17 +57,19 @@ async function submitAction(ctx) {
 }
 async function detailAction(ctx) {
     const openId = ctx.query.openId;
+    const cartId = ctx.query.cartId;
     const addressId = ctx.query.addressId || '';
+   
     const orderDetail = await mysql('nideshop_order').where({
         user_id: openId,
+        goods_id: cartId
     }).select();
 
-    var goodsIds = orderDetail[0].goods_id.split(",");
-    console.log(goodsIds);
-
+    let cartIds = orderDetail[0].goods_id.split(",");
+     
     const list = await mysql('nideshop_cart').andWhere({
         user_id: openId
-    }).whereIn('goods_id', goodsIds).select();
+    }).whereIn('id', cartIds).select();
 
     //收货地址
     var addressList;
