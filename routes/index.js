@@ -122,6 +122,12 @@ router.get('/cart/deleteAction', controllers.cart.index.deleteAction)
 router.post('/order/submitAction', controllers.order.index.submitAction)
 
 router.get('/order/detailAction', controllers.order.index.detailAction)
+//立即购买
+router.post('/order/ordernowAction', controllers.order.index.ordernowAction)
+//支付
+router.post('/order/payAction', controllers.order.index.payAction)
+
+
 /**
  *  收货地址相关接口
  */
