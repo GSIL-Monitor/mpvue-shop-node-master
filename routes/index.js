@@ -134,6 +134,13 @@ router.get('/address/detailAction', controllers.address.index.detailAction)
 //4.删除收货地址
 router.get('/address/deleteAction', controllers.address.index.deleteAction)
 
+/**
+ *  我的订单
+ */
+//订单列表
+router.get('/myorder/listAction', controllers.myorder.index.listAction)
+
+
 
 /**
  *  意见反馈
