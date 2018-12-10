@@ -16,36 +16,61 @@ async function submitAction(ctx) {
     }).select();
     // 存在
     // var nowgoodsid = "";
+
+
+
     if (isOrder.length > 0) {
         //现在的goodsId加上以前的
         // goodsId = isOrder[0].goods_id + ',' + goodsId;
         // allPrise = isOrder[0].allprise + allPrise
-        const data = await mysql('nideshop_order').where({
-            user_id: openId,
-            goods_id: cartId,
-            status: 0
-        }).update({
-            allprice: allPrise
-        });
-        if (data) {
-            ctx.body = {
-                data: true
-            }
-        } else {
-            ctx.body = {
-                data: false
-            }
+        // const data = await mysql('nideshop_order').where({
+        //     user_id: openId,
+        //     goods_id: cartId,
+        //     status: 0
+        // }).update({
+        //     allprice: allPrise
+        // });
+       
+        ctx.body = {
+            flag: true,
+            data: isOrder[0].id
         }
+
     } else {
-        const data = await mysql('nideshop_order').insert({
+        const orderId = await mysql('nideshop_order').insert({
             user_id: openId,
             goods_id: cartId,
             allprice: allPrise,
-            status: 0
+            status: 0,
+            order_time: new Date().getTime()
         });
-        if (data) {
+         
+        let cartArr = cartId.split(",");
+        const goodslist = await mysql('nideshop_cart').whereIn('id', cartArr).select();
+
+        for (let item of goodslist) {
+            await mysql('nideshop_order_goods').insert({
+                order_id: orderId,
+                goods_id: item.goods_id,
+                goods_name: item.goods_name,
+                number: item.number,
+                retail_price: item.retail_price,
+                list_pic_url: item.list_pic_url
+            });
+        }
+
+
+        await mysql('nideshop_cart').andWhere({
+            user_id: openId
+        }).whereIn('id', cartArr).update({
+            status: 1
+        });
+
+
+        if (orderId) {
             ctx.body = {
-                data: true
+                data: orderId,
+                flag: true
             }
         } else {
             ctx.body = {
@@ -59,19 +84,17 @@ async function submitAction(ctx) {
 
 async function detailAction(ctx) {
     const openId = ctx.query.openId;
-    const cartId = ctx.query.cartId;
+    const orderId = ctx.query.orderId;
     const addressId = ctx.query.addressId || '';
 
     const orderDetail = await mysql('nideshop_order').where({
         user_id: openId,
-        goods_id: cartId
+        id: orderId
     }).select();
 
-    let cartIds = orderDetail[0].goods_id.split(",");
-
-    const list = await mysql('nideshop_cart').andWhere({
-        user_id: openId
-    }).whereIn('id', cartIds).select();
+    const list = await mysql('nideshop_order_goods').where({
+        order_id: orderId
+    }).select();
 
     //收货地址
     var addressList;
@@ -103,28 +126,40 @@ async function detailAction(ctx) {
 async function payAction(ctx) {
     const {
         openId,
+        orderId,
+        address,
+        payPrice
     } = ctx.request.body;
-    let cartId = ctx.request.body.cartId;
-    let allPrise = ctx.request.body.allPrise
+
+
     //是否存在在订单
     const isOrder = await mysql('nideshop_order').where({
         user_id: openId,
-        goods_id: cartId,
+        id: orderId,
         status: 0
     }).select();
     // 存在
     // var nowgoodsid = "";
     if (isOrder.length > 0) {
-        //现在的goodsId加上以前的
-        // goodsId = isOrder[0].goods_id + ',' + goodsId;
-        // allPrise = isOrder[0].allprise + allPrise
+
         const data = await mysql('nideshop_order').where({
             user_id: openId,
-            goods_id: cartId,
-            status: 0
+            id: orderId
         }).update({
-            allprice: allPrise
+            status: 1,
+            allprice: payPrice
         });
+
+        let addressInfo =  address.address + address.address_detail +"  "+ address.name + address.mobile;
+
+        await mysql('nideshop_order_express').insert({
+            order_id: orderId,
+            is_finish: 1,
+            add_time: new Date().getTime(),
+            address_id: address.id,
+            addressinfo: addressInfo
+        });
+
         if (data) {
             ctx.body = {
                 data: true
@@ -135,21 +170,11 @@ async function payAction(ctx) {
             }
         }
     } else {
-        const data = await mysql('nideshop_order').insert({
-            user_id: openId,
-            goods_id: cartId,
-            allprice: allPrise,
-            status: 0
-        });
-        if (data) {
-            ctx.body = {
-                data: true
-            }
-        } else {
+       
             ctx.body = {
                 data: false
             }
-        }
+        
     }
 
 
@@ -166,112 +191,43 @@ async function ordernowAction(ctx) {
     let skuId = ctx.request.body.skuId;
     let showPrice = ctx.request.body.showPrice;
     let productMsg = ctx.request.body.productMsg;
+    let goodsInfo = ctx.request.body.goodsInfo;
 
-    //购物车逻辑开始
-    //判断购物车是否包含此数据
-    const haveGoods = await mysql("nideshop_cart").where({
-        "user_id": openId,
-        "goods_id": goodsId,
-        "goods_name": productMsg,
-        "status": 8
-    }).select();
+    let allPrise = Number(showPrice)*Number(number);
 
-    if (haveGoods.length == 0) {
-        const goods = await mysql("nideshop_goods").where({
-            "id": goodsId
-        }).select();
-        const {
-            // retail_price,
-            // name,
-            list_pic_url
-        } = goods[0];
-        //插入购物车
-        await mysql('nideshop_cart').insert({
-            "user_id": openId,
-            "goods_id": goodsId,
-            number,
-            "goods_name": productMsg,
-            list_pic_url,
-            "retail_price": showPrice,
-            "sku_id": skuId,
-            "status": 8
-        });
-
-    } else {
-        //如果存在更改数量为最新下单数量
-        await mysql("nideshop_cart").where({
-            "user_id": openId,
-            "goods_id": goodsId,
-            "goods_name": productMsg,
-            "status": 8
-        }).update({
-            "number": number
-        });
-    }
-    //购物车逻辑结束
-
-    const newCart = await mysql("nideshop_cart").column('id').where({
+    const orderId = await mysql('nideshop_order').insert({
         user_id: openId,
         goods_id: goodsId,
-        goods_name: productMsg,
-        status: 8
-    }).select();
+        allprice: allPrise,
+        status: 0,
+        order_time: new Date().getTime()
+    });
 
-    let newCartId = 0;
-    if (newCart.length > 0) {
-        newCartId = newCart[0].id;
+    if(goodsInfo){
+        await mysql('nideshop_order_goods').insert({
+            order_id: orderId,
+            goods_id: goodsId,
+            goods_name: productMsg,
+            number: number,
+            retail_price: showPrice,
+            list_pic_url: goodsInfo.list_pic_url
+        });
+    
     }
 
-    let allPrise = Number(number) * Number(showPrice);
-
-
-    //是否存在在订单
-    const isOrder = await mysql('nideshop_order').where({
-        user_id: openId,
-        goods_id: newCartId,
-        status: 0
-    }).select();
-    // 存在
-    // var nowgoodsid = "";
-    if (isOrder.length > 0) {
-
-        const data = await mysql('nideshop_order').where({
-            user_id: openId,
-            goods_id: newCartId,
-            status: 0
-        }).update({
-            allprice: allPrise
-        });
-        if (data) {
-            ctx.body = {
-                flag: true,
-                data: newCartId
-            }
-        } else {
-            ctx.body = {
-                flag: false
-            }
+  
+    if (orderId) {
+        ctx.body = {
+            flag: true,
+            data: orderId
         }
-
     } else {
-        const data = await mysql('nideshop_order').insert({
-            user_id: openId,
-            goods_id: newCartId,
-            allprice: allPrise,
-            status: 0
-        });
-        if (data) {
-            ctx.body = {
-                flag: true,
-                data: newCartId
-            }
-        } else {
-            ctx.body = {
-                flag: false
-            }
+        ctx.body = {
+            flag: false
         }
-
     }
+
+
 
 }
 
