@@ -21,11 +21,11 @@ const CONF = {
 
   // 微信小程序 App ID
   // appId: 'wx601ce71bde7b9add',
-  appId: 'wx089feeadfaa8607f',
+  appId: 'wx14bcb5da611752a6',
 
   // 微信小程序 App Secret
   //appSecret: '70f8b290df708e2482169662e730b8fc',
-  appSecret: '084b11fb12ec7b15625f90a4814c9210',
+  appSecret: '73751abebc385bea449aa7873380b727',
 
 
   // 是否使用腾讯云代理登录小程序

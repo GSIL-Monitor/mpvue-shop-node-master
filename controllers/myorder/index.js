@@ -53,12 +53,15 @@ async function listAction(ctx) {
     const orderData = await mysql('nideshop_order').where(params).select();
     const orderList = []
     for(let item of orderData) {
-        const goodsIdArr = item.goods_id.split(',')
-        const goodsList = await mysql('nideshop_cart').andWhere({
-            user_id: openId
-        }).whereIn('id', goodsIdArr).select()
+        const orderId = item.id
+        const goodsList = await mysql('nideshop_order_goods').where({
+            order_id: orderId
+        }).select()
         orderList.push({
             id: item.id,
+            orderTime: item.order_time,
+            orderStatus: item.status,
+            allPrice: item.allprice,
             goodsList
         })
     }
