@@ -313,7 +313,7 @@ async function getPrepayId(ctx) {
                         package: returnValue.package, //数据包
                         signType: 'MD5', //签名方式
                         timeStamp: returnValue.timestamp, //时间戳
-                        key: CONF.mchId
+                        key: CONF.mchKey
                     }
                     returnValue.paySign = paysign.paysignjsapi(wxSign); // 签名
                 } else {
@@ -322,6 +322,8 @@ async function getPrepayId(ctx) {
                 }
             }
         })
+    }).catch(err => {
+        console.log(err)
     })
     ctx.body = returnValue
 }
