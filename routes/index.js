@@ -126,6 +126,8 @@ router.get('/order/detailAction', controllers.order.index.detailAction)
 router.post('/order/ordernowAction', controllers.order.index.ordernowAction)
 //支付
 router.post('/order/payAction', controllers.order.index.payAction)
+//获取prepay_id
+router.post('/order/getPrepayId', controllers.order.index.getPrepayId)
 
 
 /**

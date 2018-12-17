@@ -27,6 +27,12 @@ const CONF = {
   //appSecret: '70f8b290df708e2482169662e730b8fc',
   appSecret: '73751abebc385bea449aa7873380b727',
 
+  // 微信支付商户id
+  mchId: '1520831731',
+
+  // 微信支付商户key
+  mchKey: 'SxR20150329sUnMaN1113ZY0616oOsun',
+
 
   // 是否使用腾讯云代理登录小程序
   useQcloudLogin: true,
