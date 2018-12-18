@@ -245,9 +245,9 @@ async function getPrepayId(ctx) {
     } = ctx.request.body;
     const spbill_create_ip = '192.168.3.11' //ctx.header.host.replace(/::ffff:/, ''); // 获取客户端ip
     const body = '测试支付'; // 商品描述
-    const notify_url = '' // 支付成功的回调地址  可访问 不带参数
-    const nonce_str = new Date().getTime(); // 随机字符串
-    const out_trade_no = new Date().getTime(); // 商户订单号
+    const notify_url = 'http://localhost:5757/order/getPrepayId' // 支付成功的回调地址  可访问 不带参数
+    const nonce_str = new Date().getTime() + ''; // 随机字符串
+    const out_trade_no = new Date().getTime() + ''; // 商户订单号
     const total_fee = '1'; // 订单价格 单位是 分
     const timestamp = Math.round(new Date().getTime() / 1000); // 当前时间
     const ret = {

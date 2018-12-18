@@ -25,7 +25,6 @@ function raw(args) {
   keys = keys.sort();
   var newArgs = {};
   keys.forEach(function(key) {
-    newArgs[key.toLowerCase()] = args[key];
     newArgs[key] = args[key];
   });
   var str = '';
