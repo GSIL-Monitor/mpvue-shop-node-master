@@ -43,11 +43,11 @@ const CONF = {
    * 开发环境下，MySQL 的初始密码为您的微信小程序 appid
    */
   mysql: {
-    host: 'localhost',
+    host: '118.24.89.224',
     port: 3306,
     user: 'root',
     db: 'nodemysql',
-    pass: '123456',
+    pass: '000000',
     char: 'utf8mb4'
   },
 
@@ -78,6 +78,13 @@ const CONF = {
 //  wxMessageToken: 'weixinmsgtoken',
 //  networkTimeout: 30000
   //线上配置----------------------------
+
+
+  //回调域名
+  notify_url : 'http://www.chinafish.club:5757/heyushuo',
+
+
+
 }
 
 module.exports = CONF

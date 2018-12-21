@@ -155,4 +155,8 @@ router.get('/myorder/listAction', controllers.myorder.index.listAction)
  */
 router.post('/feedback/submitAction', controllers.feedback.index.submitAction)
 
+
+//微信notify接口
+router.post('/wepaynotify/repsAction', controllers.wepaynotify.index.repsAction)
+
 module.exports = router
