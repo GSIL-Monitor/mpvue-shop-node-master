@@ -74,40 +74,18 @@ async function repsAction(ctx) {
         encoding: ctx.request.charset || 'utf-8'
     })
 
-    // const notify_xml = `<xml><appid><![CDATA[wx14bcb5da611752a6]]></appid>
-    // <bank_type><![CDATA[CFT]]></bank_type>
-    // <cash_fee><![CDATA[1]]></cash_fee>
-    // <fee_type><![CDATA[CNY]]></fee_type>
-    // <is_subscribe><![CDATA[N]]></is_subscribe>
-    // <mch_id><![CDATA[1520831731]]></mch_id>
-    // <nonce_str><![CDATA[1545380246099]]></nonce_str>
-    // <openid><![CDATA[oFZ8c5IvHt4iH2CutzHWshnU2XsM]]></openid>
-    // <out_trade_no><![CDATA[90]]></out_trade_no>
-    // <result_code><![CDATA[SUCCESS]]></result_code>
-    // <return_code><![CDATA[SUCCESS]]></return_code>
-    // <sign><![CDATA[F3F8187ED5AEDBFED0E5753EADFCC232]]></sign>
-    // <time_end><![CDATA[20181221161743]]></time_end>
-    // <total_fee>1</total_fee>
-    // <trade_type><![CDATA[JSAPI]]></trade_type>
-    // <transaction_id><![CDATA[4200000213201812218392793687]]></transaction_id>
-    // </xml>`
-
     let bodyData = '<xml>';
-
-    let status = '';
 
     parser.parseString(notify_xml, (err, result) => {
         if (err) {
             console.log(err)
         } else {
             if (result.xml.return_code[0] === 'SUCCESS') { 
-                status = 100;
                 bodyData += '<return_code>SUCCESS</return_code>';
                 bodyData += '<return_msg>OK</return_msg>';
                 bodyData += '</xml>';
                 handlerOrder(result)
             } else {
-                status = 400;
                 bodyData += '<return_code>FAIL</return_code>';
                 bodyData += '<return_msg>FAIL</return_msg>';
                 bodyData += '</xml>';
@@ -115,8 +93,6 @@ async function repsAction(ctx) {
         }
     })
 
-    console.log(bodyData);
-    // ctx.status = status;
     ctx.type = 'application/xml';
     ctx.body = bodyData;
 

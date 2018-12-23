@@ -15,7 +15,8 @@ async function submitAction(ctx) {
         openId,
     } = ctx.request.body;
     let cartId = ctx.request.body.cartId;
-    let allPrise = ctx.request.body.allPrise
+    let allPrise = ctx.request.body.allPrise;
+    allPrise = Number(allPrise) + 23;
     //是否存在未支付的订单
     const isOrder = await mysql('nideshop_order').where({
         user_id: openId,
@@ -201,7 +202,7 @@ async function ordernowAction(ctx) {
     let productMsg = ctx.request.body.productMsg;
     let goodsInfo = ctx.request.body.goodsInfo;
 
-    let allPrise = Number(showPrice)*Number(number);
+    let allPrise = Number(showPrice)*Number(number)+23;
 
     const orderId = await mysql('nideshop_order').insert({
         user_id: openId,
