@@ -50,7 +50,8 @@ async function listAction(ctx) {
         user_id: openId
     }
     status && (params.status = status)
-    const orderData = await mysql('nideshop_order').where(params).select();
+    const orderData = await mysql('nideshop_order').where(params).orderBy('id', 'desc').select();
+
     const orderList = []
     for(let item of orderData) {
         const orderId = item.id
