@@ -148,6 +148,9 @@ router.get('/address/deleteAction', controllers.address.index.deleteAction)
 //订单列表
 router.get('/myorder/listAction', controllers.myorder.index.listAction)
 
+router.get('/orderDetail/detailAction', controllers.orderDetail.index.detailAction)
+
+
 
 
 /**

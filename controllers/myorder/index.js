@@ -57,7 +57,7 @@ async function listAction(ctx) {
         const orderId = item.id
         const goodsList = await mysql('nideshop_order_goods').where({
             order_id: orderId
-        }).select()
+        }).select();
         orderList.push({
             id: item.id,
             orderTime: item.order_time,

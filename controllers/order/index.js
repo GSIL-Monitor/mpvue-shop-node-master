@@ -134,33 +134,11 @@ async function detailAction(ctx) {
 
 async function payAction(ctx) {
     const {
-        openId,
         orderId,
-        address,
-        payPrice
+        address
     } = ctx.request.body;
 
-
-    //是否存在在订单
-    const isOrder = await mysql('nideshop_order').where({
-        user_id: openId,
-        id: orderId,
-        status: 0
-    }).select();
-    // 存在
-    // var nowgoodsid = "";
-    if (isOrder.length > 0) {
-
-        const data = await mysql('nideshop_order').where({
-            user_id: openId,
-            id: orderId
-        }).update({
-            status: 1,
-            allprice: payPrice
-        });
-
         let addressInfo =  address.address + address.address_detail +"  "+ address.name + address.mobile;
-
         await mysql('nideshop_order_express').insert({
             order_id: orderId,
             is_finish: 1,
@@ -178,13 +156,6 @@ async function payAction(ctx) {
                 data: false
             }
         }
-    } else {
-       
-            ctx.body = {
-                data: false
-            }
-        
-    }
 
 
 }
