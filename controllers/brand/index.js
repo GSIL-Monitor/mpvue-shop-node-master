@@ -4,10 +4,16 @@ const {
 
 async function listAction(ctx) {
   var page = ctx.query.page || 1;
-  var size = 5;
+  var size = 3;
   const data = await mysql('nideshop_brand').column('id', 'name', 'floor_price', 'app_list_pic_url').limit(size).offset((page - 1) * size).select();
   const data1 = await mysql('nideshop_brand').column('id', 'name', 'floor_price', 'app_list_pic_url').select();
-  const total = parseInt(data1.length / size);
+  let total = 0;
+  if(data1.length % size === 0 ){
+    total = parseInt(data1.length / size);
+  }else{
+    total = parseInt(data1.length / size) + 1;
+  }
+
   ctx.body = {
     "total": total,
     data
