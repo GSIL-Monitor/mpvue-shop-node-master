@@ -218,7 +218,7 @@ async function getPrepayId(ctx) {
         orderId
     } = ctx.request.body;
     const spbill_create_ip = '192.168.1.1';//ctx.header.host.replace(/::ffff:/, ''); //ctx.header.host.replace(/::ffff:/, ''); // 获取客户端ip
-    const body = '测试支付'; // 商品描述
+    const body = '浅小塘'; // 商品描述
     const notify_url = CONF.notify_url+'/wepaynotify/repsAction' // 支付成功的回调地址  可访问 不带参数
     const nonce_str = new Date().getTime() + ''; // 随机字符串
     const out_trade_no = orderId + ''; // 商户订单号
