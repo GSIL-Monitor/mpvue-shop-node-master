@@ -59,7 +59,7 @@ async function handlerOrder(result) {
         await mysql('nideshop_order').where({
             id: returnValue.out_trade_no,
         }).update({
-            status: 2
+            status: 1
         });
 
     }
