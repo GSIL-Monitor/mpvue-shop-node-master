@@ -14,7 +14,7 @@ module.exports = async (ctx) => {
     }).select();
     //类型
     //这几个id有商品详情
-    const newGoods = await mysql('nideshop_goods').whereIn('id', [1181000, 1135002, 1134030, 1134032]).andWhere("is_new", 1).select();
+    const newGoods = await mysql('nideshop_goods').where("is_new", 1).orderBy("sort_order", 'asc').select();
 
     // const newGoods = await mysql('nideshop_goods').where("is_new", 1).limit(4).select();
     /**
