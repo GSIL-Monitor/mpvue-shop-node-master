@@ -222,7 +222,7 @@ async function getPrepayId(ctx) {
     const notify_url = CONF.notify_url+'/wepaynotify/repsAction' // 支付成功的回调地址  可访问 不带参数
     const nonce_str = new Date().getTime() + ''; // 随机字符串
     const out_trade_no = orderId + ''; // 商户订单号
-    const total_fee = payPrice;     //payPrice + ''; // 订单价格 单位是 分
+    const total_fee = Number(payPrice) * 100;     //payPrice + ''; // 订单价格 单位是 分
     const timestamp = Math.round(new Date().getTime() / 1000); // 当前时间
     const ret = {
         appid: CONF.appId,
@@ -274,6 +274,7 @@ async function getPrepayId(ctx) {
                 console.log(err)
             } else {
                 if (result.xml.return_code[0] === 'SUCCESS') {
+                    console.log(result.xml);
                     returnValue.msg = '操作成功';
                     returnValue.status = '100';
                     returnValue.out_trade_no = out_trade_no; // 商户订单号
