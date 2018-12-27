@@ -274,7 +274,6 @@ async function getPrepayId(ctx) {
                 console.log(err)
             } else {
                 if (result.xml.return_code[0] === 'SUCCESS') {
-                    console.log(result.xml);
                     returnValue.msg = '操作成功';
                     returnValue.status = '100';
                     returnValue.out_trade_no = out_trade_no; // 商户订单号
