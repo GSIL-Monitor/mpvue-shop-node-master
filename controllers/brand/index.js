@@ -4,7 +4,7 @@ const {
 
 async function listAction(ctx) {
   var page = ctx.query.page || 1;
-  var size = 3;
+  var size = 5;
   const data = await mysql('nideshop_brand').column('id', 'name', 'floor_price', 'app_list_pic_url').limit(size).offset((page - 1) * size).select();
   const data1 = await mysql('nideshop_brand').column('id', 'name', 'floor_price', 'app_list_pic_url').select();
   let total = 0;
