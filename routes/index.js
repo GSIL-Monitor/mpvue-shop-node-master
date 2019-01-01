@@ -71,6 +71,8 @@ router.get('/goods/detailaction', controllers.goods.index.detailAction)
 router.get('/goods/goodsList', controllers.goods.index.goodsList)
 //3.商品sku接口
 router.get('/goods/skuinfoaction', controllers.goods.index.skuinfoaction)
+//4.获取全部商品
+router.get('/goods/allGoodsList', controllers.goods.index.allGoodsList)
 
 
 /**
